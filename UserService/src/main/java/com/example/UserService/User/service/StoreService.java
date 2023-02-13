@@ -9,10 +9,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-@Service
+@Service("UserStoreService")
 @RequiredArgsConstructor
 @Slf4j
-public class Storeservice {
+public class StoreService {
 
     private final StoreRepository storeRepository;
 

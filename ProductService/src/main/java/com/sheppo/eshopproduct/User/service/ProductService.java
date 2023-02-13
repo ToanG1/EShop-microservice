@@ -16,6 +16,8 @@ import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service("userProductService")
 @RequiredArgsConstructor
 @Slf4j
@@ -45,13 +47,17 @@ public class ProductService {
     public ProductResponse find(FindProductRequest productRequest) {
         Query query = new Query();
 
-        Pageable pageable = PageRequest.of(productRequest.getCurrentPage(), productRequest.getSize());
-        query.with(pageable);
+        if (productRequest.getSize() != null && productRequest.getCurrentPage() != null) {
+            Pageable pageable = PageRequest.of(productRequest.getCurrentPage(), productRequest.getSize());
+            query.with(pageable);
+        }
 
         query.addCriteria(Criteria.where("is_active").is(true).and("is_selling").is(true));
 
         if (productRequest.getName() != null)
-            query.addCriteria( Criteria.where("name").regex(productRequest.getName()));
+            query.addCriteria(Criteria.where("name").regex(productRequest.getName()));
+        if (productRequest.getProductId() != null)
+            query.addCriteria(Criteria.where("id").is(productRequest.getProductId()));
         if (productRequest.getCategoryId() != null)
             query.addCriteria(Criteria.where("category.id").is(productRequest.getCategoryId()));
         if (productRequest.getListStyleId() != null)
@@ -75,8 +81,14 @@ public class ProductService {
         return ProductResponse.builder()
                 .productDtoList(mongoTemplate.find(query, Product.class).stream().map(this::mapToProductRespone).toList())
                 .currentPage(productRequest.getCurrentPage())
-                .totalPage((((int) mongoTemplate.count(query, Product.class)) / productRequest.getSize()) + 1)
+                .totalPage(productRequest.getSize() != null ?
+                        ((((int) mongoTemplate.count(query, Product.class)) / productRequest.getSize()) + 1) : 1)
                 .size(productRequest.getSize())
                 .build();
     }
+
+    public List<ProductDto> findByProductIdList(List<String> productIdList){
+        return productRepository.findAllById(productIdList).stream().map(this::mapToProductRespone).toList();
+    }
+
 }

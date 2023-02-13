@@ -15,6 +15,7 @@ import java.util.List;
 @AllArgsConstructor
 public class FindProductRequest {
     private String name;
+    private String productId;
     private String categoryId;
     private String storeId;
     private List<String> listStyleId;

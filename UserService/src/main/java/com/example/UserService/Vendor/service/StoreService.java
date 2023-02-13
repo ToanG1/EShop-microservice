@@ -1,4 +1,4 @@
-package com.example.UserService.Vendor.service.StoreService;
+package com.example.UserService.Vendor.service;
 
 import com.example.UserService.Vendor.dto.Store.Request.CreateStoreRequest;
 import com.example.UserService.Vendor.dto.Store.Request.FindStoreRequest;

@@ -5,7 +5,7 @@ import com.example.UserService.Vendor.dto.Store.Request.FindStoreRequest;
 import com.example.UserService.Vendor.dto.Store.Response.ListStoreResponse;
 import com.example.UserService.Vendor.dto.Store.Response.StoreResponse;
 import com.example.UserService.Vendor.dto.Store.Request.UpdateStoreRequest;
-import com.example.UserService.Vendor.service.StoreService.StoreService;
+import com.example.UserService.Vendor.service.StoreService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
