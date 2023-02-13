@@ -13,6 +13,5 @@ import java.util.List;
 public interface StoreRepository extends JpaRepository<Store, Long> {
     Page<Store> findAllByOwnerUidAndIsActiveAndIsOpen(String uid, Boolean isActive, Boolean isOpen, Pageable pageable);
 
-    List<Store> findAllByOwnerUidAndIsActiveAndIsOpen(String uid, Boolean isActive, Boolean isOpen);
-
+    Integer countByOwnerUidAndIsActiveAndIsOpen(String uid, Boolean isActive, Boolean isOpen);
 }

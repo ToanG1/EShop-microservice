@@ -62,9 +62,9 @@ public class StoreService {
         return ListStoreResponse.builder()
                 .storeResponseList(storeList.stream().map(this::mapToStoreResponse).toList())
                 .currentPage(findStoreRequest.getCurrentPage())
-                .totalPage(( (int)storeRepository.findAllByOwnerUidAndIsActiveAndIsOpen
+                .totalPage(( (int)storeRepository.countByOwnerUidAndIsActiveAndIsOpen
                         (findStoreRequest.getOwnerUid(),findStoreRequest.getIsActive(), findStoreRequest.getIsOpen())
-                        .stream().count() / findStoreRequest.getSize()) + 1)
+                        / findStoreRequest.getSize()) + 1)
                 .size(findStoreRequest.getSize())
                 .build();
     }
