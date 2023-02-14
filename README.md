@@ -74,6 +74,7 @@ Vendor:
 +UserFollowStore:
 - lay danh sach khach hang theo doi cua hang
 - lay so luong nguoi theo doi cua hang
+
 +UserFollowProduct:
 - lay danh sach khach hang theo doi san pham
 - lay so luong nguoi theo doi san pham
