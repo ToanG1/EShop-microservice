@@ -32,4 +32,8 @@ public class StoreService {
                     .build();
         else return new StoreResponse();
     }
+
+    public boolean isStoreValid(Long id) {
+        return storeRepository.existsByIdAndIsActiveIsTrueAndIsActiveIsTrue(id);
+    }
 }

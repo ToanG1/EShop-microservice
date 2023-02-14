@@ -18,4 +18,10 @@ public class StoreController {
     public StoreResponse findStore(@RequestParam Long id){
         return storeservice.findStore(id);
     }
+
+    @GetMapping("/isValid")
+    @ResponseStatus(HttpStatus.OK)
+    public boolean isStoreValid(@RequestParam Long id){
+        return storeservice.isStoreValid(id);
+    }
 }

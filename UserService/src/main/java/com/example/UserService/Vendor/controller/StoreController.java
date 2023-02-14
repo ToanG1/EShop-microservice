@@ -41,4 +41,10 @@ public class StoreController {
     public void updateStore(@RequestBody UpdateStoreRequest updateStoreRequest){
         storeService.updateStore(updateStoreRequest);
     }
+
+    @PutMapping("/open")
+    @ResponseStatus(HttpStatus.OK)
+    public void changeOpenStatus(@RequestParam Long id){
+        storeService.changeOpenStatus(id);
+    }
 }

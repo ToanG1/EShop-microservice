@@ -22,7 +22,6 @@ import java.util.*;
 @Slf4j
 public class StoreService {
 
-    private final WebClient webClient;
     private final UserRepository userRepository;
 
     private final StoreRepository storeRepository;
@@ -62,9 +61,9 @@ public class StoreService {
         return ListStoreResponse.builder()
                 .storeResponseList(storeList.stream().map(this::mapToStoreResponse).toList())
                 .currentPage(findStoreRequest.getCurrentPage())
-                .totalPage(( (int)storeRepository.countByOwnerUidAndIsActiveAndIsOpen
+                .totalPage( Math.round((int)storeRepository.countByOwnerUidAndIsActiveAndIsOpen
                         (findStoreRequest.getOwnerUid(),findStoreRequest.getIsActive(), findStoreRequest.getIsOpen())
-                        / findStoreRequest.getSize()) + 1)
+                        / findStoreRequest.getSize()))
                 .size(findStoreRequest.getSize())
                 .build();
     }
@@ -99,5 +98,20 @@ public class StoreService {
                     log.info("Store {} is update successfully", store.getId());
                 },
                 () -> log.info("Store {} is not available", updateStoreRequest.getId()));
+    }
+
+    public void changeOpenStatus(long id) {
+        storeRepository.findById(id).ifPresentOrElse(
+                store -> {
+                    if (store.getIsActive() == true) {
+                        store.setIsOpen(!store.getIsOpen());
+                        store.setUpdateAt(new Date());
+
+                        storeRepository.save(store);
+                        log.info("Store {} is {} now", store.getId(), store.getIsOpen() ? "open" : "close");
+                    } else log.info("Store {} is not active yet", id);
+                },
+                () -> log.info("Store {} is not available", id)
+        );
     }
 }

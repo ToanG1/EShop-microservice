@@ -27,6 +27,12 @@ public class UserController {
         return userService.findUser(uid);
     }
 
+    @GetMapping("/isValid")
+    @ResponseStatus(HttpStatus.OK)
+    public Boolean isUserValid(@RequestParam String uid){
+        return userService.findUser(uid) != null ? true : false;
+    }
+
     @PutMapping
     @ResponseStatus(HttpStatus.OK)
     public void updateUser(@RequestBody UpdateUserRequest updateUserRequest){

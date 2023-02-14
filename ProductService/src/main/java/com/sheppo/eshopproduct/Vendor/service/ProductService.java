@@ -1,7 +1,8 @@
 package com.sheppo.eshopproduct.Vendor.service;
 
 import com.sheppo.eshopproduct.Vendor.dto.Product.Request.*;
-import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductResponse;
+import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductDto;
+import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductListResponse;
 import com.sheppo.eshopproduct.model.Category;
 import com.sheppo.eshopproduct.model.Product;
 import com.sheppo.eshopproduct.repository.CategoryRepository;
@@ -57,7 +58,7 @@ public class ProductService {
     }
 
 
-    public List<ProductResponse> find(FindProductRequest productRequest) {
+    public ProductListResponse find(FindProductRequest productRequest) {
         Query query = new Query();
 
         Pageable pageable = PageRequest.of(productRequest.getCurrentPage(), productRequest.getSize());
@@ -96,12 +97,17 @@ public class ProductService {
         }
 
         List<Product> productList = mongoTemplate.find(query, Product.class);
-        List<ProductResponse> productResponseList = productList.stream().map(this::mapToProductRespone).toList();
-        return productResponseList;
+        List<ProductDto> productDtoList = productList.stream().map(this::mapToProductRespone).toList();
+        return ProductListResponse.builder()
+                .productDtoList(productDtoList)
+                .currentPage(productRequest.getCurrentPage())
+                .size(productRequest.getSize())
+                .totalPage(Math.round((int) mongoTemplate.count(query, Product.class) / productRequest.getSize()))
+                .build();
     }
 
-    private ProductResponse mapToProductRespone(Product product) {
-        return ProductResponse.builder()
+    private ProductDto mapToProductRespone(Product product) {
+        return ProductDto.builder()
                 .id(product.getId())
                 .name(product.getName())
                 .description(product.getDescription())

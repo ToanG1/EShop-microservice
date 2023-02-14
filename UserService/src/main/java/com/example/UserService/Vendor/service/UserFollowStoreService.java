@@ -25,7 +25,7 @@ public class UserFollowStoreService {
                                 .stream().map(this::mapToUserDto).toList())
                 .currentPage(ffsRequest.getCurrentPage())
                 .size(ffsRequest.getSize())
-                .totalPage(Math.round(ufsRepository.countByStoreId(ffsRequest.getStoreId()) / ffsRequest.getSize()))
+                .totalPage(Math.round(ufsRepository.countByStoreId(ffsRequest.getStoreId()) / (ffsRequest.getSize())))
                 .build();
     }
 

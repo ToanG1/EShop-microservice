@@ -17,8 +17,18 @@ public class StoreService {
                 store -> {
                     store.setIsActive(!store.getIsActive());
                     storeRepository.save(store);
-                    log.info("Store is {} now", store.getIsActive() ? "active" : "unactive");
+                    log.info("Store {} is {} now", id, store.getIsActive() ? "active" : "unactive");
                 },
                 () -> log.info("Store {} is not available", id));
+    }
+
+    public void deleteStore(Long id) {
+        storeRepository.findById(id).ifPresentOrElse(
+                store -> {
+                    storeRepository.delete(store);
+                    log.info("Store {} is deleted successfully", id);
+                },
+                () -> log.info("Store {} is not available", id)
+        );
     }
 }

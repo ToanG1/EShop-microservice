@@ -1,7 +1,8 @@
 package com.sheppo.eshopproduct.Vendor.controller;
 
 import com.sheppo.eshopproduct.Vendor.dto.Product.Request.*;
-import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductResponse;
+import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductDto;
+import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductListResponse;
 import com.sheppo.eshopproduct.Vendor.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,7 +24,7 @@ public class ProductController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<ProductResponse> find(@RequestBody FindProductRequest findProductRequest){
+    public ProductListResponse find(@RequestBody FindProductRequest findProductRequest){
         return productService.find(findProductRequest);
     }
 

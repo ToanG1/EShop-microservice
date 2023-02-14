@@ -18,6 +18,7 @@
     <modules>
         <module>ProductService</module>
         <module>UserService</module>
+        <module>OrderService</module>
     </modules>
 
     <properties>

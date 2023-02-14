@@ -17,4 +17,8 @@ public class StoreController {
     public void updateActiveStore(@RequestParam Long id){
         storeService.updateActiveStore(id);
     }
+
+    @DeleteMapping
+    @ResponseStatus(HttpStatus.OK)
+    public void deleteStore(@RequestParam Long id) { storeService.deleteStore(id);}
 }

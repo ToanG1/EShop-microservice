@@ -64,7 +64,7 @@ public class UserFollowStoreService {
                 )
                 .currentPage(ffsRequest.getCurrentPage())
                 .size(ffsRequest.getSize())
-                .totalPage((ufsRepository.countByUserUid(ffsRequest.getUid()) / ffsRequest.getSize()) + 1)
+                .totalPage( Math.round(ufsRepository.countByUserUid(ffsRequest.getUid()) / ffsRequest.getSize()))
                 .build();
     }
 

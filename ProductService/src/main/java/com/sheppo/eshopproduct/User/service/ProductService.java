@@ -81,8 +81,7 @@ public class ProductService {
         return ProductResponse.builder()
                 .productDtoList(mongoTemplate.find(query, Product.class).stream().map(this::mapToProductRespone).toList())
                 .currentPage(productRequest.getCurrentPage())
-                .totalPage(productRequest.getSize() != null ?
-                        ((((int) mongoTemplate.count(query, Product.class)) / productRequest.getSize()) + 1) : 1)
+                .totalPage( Math.round(( (int) mongoTemplate.count(query, Product.class)) / productRequest.getSize()))
                 .size(productRequest.getSize())
                 .build();
     }
