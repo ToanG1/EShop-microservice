@@ -13,7 +13,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.*;
 
@@ -61,7 +60,7 @@ public class StoreService {
         return ListStoreResponse.builder()
                 .storeResponseList(storeList.stream().map(this::mapToStoreResponse).toList())
                 .currentPage(findStoreRequest.getCurrentPage())
-                .totalPage( Math.round((int)storeRepository.countByOwnerUidAndIsActiveAndIsOpen
+                .totalPage((int) Math.ceil((float) (int)storeRepository.countByOwnerUidAndIsActiveAndIsOpen
                         (findStoreRequest.getOwnerUid(),findStoreRequest.getIsActive(), findStoreRequest.getIsOpen())
                         / findStoreRequest.getSize()))
                 .size(findStoreRequest.getSize())
@@ -103,7 +102,7 @@ public class StoreService {
     public void changeOpenStatus(long id) {
         storeRepository.findById(id).ifPresentOrElse(
                 store -> {
-                    if (store.getIsActive() == true) {
+                    if (store.getIsActive()) {
                         store.setIsOpen(!store.getIsOpen());
                         store.setUpdateAt(new Date());
 

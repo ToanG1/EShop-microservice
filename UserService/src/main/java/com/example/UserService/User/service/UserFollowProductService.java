@@ -74,7 +74,7 @@ public class UserFollowProductService {
                 .productDtoList(Arrays.stream(response).toList())
                 .currentPage(ffpRequest.getCurrentPage())
                 .size(ffpRequest.getSize())
-                .totalPage( Math.round(ufpRepository.countByUserUid(ffpRequest.getUid()) / ffpRequest.getSize()))
+                .totalPage((int) Math.ceil(ufpRepository.countByUserUid(ffpRequest.getUid()) / ffpRequest.getSize()))
                 .build();
     }
 }

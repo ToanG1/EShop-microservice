@@ -65,7 +65,7 @@ public class CategoryService {
         return CategoryRespone.builder()
                 .categoryDtoList(mongoTemplate.find(query, Category.class).stream().map(this::mapToCategoryRespone).toList())
                 .currentPage(findCategoryRequest.getCurrentPage() != null ? findCategoryRequest.getCurrentPage() : 1)
-                .totalPage( Math.round((int) mongoTemplate.count(query, Category.class) / findCategoryRequest.getSize()))
+                .totalPage((int) Math.ceil((float) mongoTemplate.count(query, Category.class) / findCategoryRequest.getSize()))
                 .size(findCategoryRequest.getSize())
                 .build();
     }

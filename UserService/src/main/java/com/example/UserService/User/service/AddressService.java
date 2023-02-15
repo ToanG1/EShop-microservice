@@ -56,7 +56,7 @@ public class AddressService {
                         .get().map(this::mapToAddressDto).toList())
                 .currentPage(findAddressRequest.getCurrentPage())
                 .size(findAddressRequest.getSize())
-                .totalPage( Math.round(addressRepository.countAddressByUserUid(findAddressRequest.getUid()) / findAddressRequest.getSize()))
+                .totalPage((int) Math.ceil((float) addressRepository.countAddressByUserUid(findAddressRequest.getUid()) / findAddressRequest.getSize()))
                 .build();
     }
 

@@ -24,7 +24,6 @@ public class OrderItem {
     private Integer productValue;
     private Integer quantity;
     private Date createAt;
-    private Date updateAt;
     @ManyToOne
     @JoinColumn(name = "orderId")
     private Order order;

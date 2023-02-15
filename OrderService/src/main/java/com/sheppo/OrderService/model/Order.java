@@ -25,6 +25,8 @@ public class Order {
     private Integer orderStatus;
     private Integer orderValue;
     private Integer shippingCost;
+    private String payment;
+    private Boolean isPaid;
     private Date createAt;
     private Date updateAt;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")

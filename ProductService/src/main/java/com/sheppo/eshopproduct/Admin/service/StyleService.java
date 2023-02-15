@@ -64,7 +64,7 @@ public class StyleService {
         return StyleResponse.builder()
                 .styleDtoList(mongoTemplate.find(query, Style.class).stream().map(this::mapToStyleResponse).toList())
                 .currentPage(findStyleRequest.getCurrentPage())
-                .totalPage( Math.round((int) mongoTemplate.count(query, Style.class) / findStyleRequest.getSize()))
+                .totalPage((int) Math.ceil((float) mongoTemplate.count(query, Style.class) / findStyleRequest.getSize()))
                 .size(findStyleRequest.getSize())
                 .build();
     }
