@@ -81,12 +81,51 @@ Vendor:
 
 
 Admin: 
+
 +User:
 
 +Store:
 - thay doi trang thai isActive
 
 +Adress
+
+
+*** EShop4Order ***
+db: postgresql
+
+User:
+
++CartItem: 
+- tao gio hang cho khach hang moi
+- them cartbox cho cartitem cua shop chua ton tai trong cart
+- them cartitem
+- thay doi so luong cua cartitem
+- xoa cartItem (dong thoi xoa cartbox khi khong con cartitem trong box)
+- xoa cartBox
+
++Order:
+
+Vendor:
+
+
+Admin:
+
+
++Shipping
+- them phuong thuc giao hang
+- sua thong tin phuong thuc giao hang
+- xoa phuong thuc giao hang
+- tim kiem phuong thuc giao hang
+
+
++Voucher:
+- them voucher
+- sua thong tin voucher
+- xoa voucher
+- tim kiem voucher
+
+
+
 
 
 
