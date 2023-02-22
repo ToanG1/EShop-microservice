@@ -1,4 +1,4 @@
-package com.sheppo.OrderService.common.dto.Response;
+package com.sheppo.OrderService.common.dto.Product.Response;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,11 +14,9 @@ import java.util.List;
 public class ProductDto {
     private String id;
     private String name;
-    private String description;
     private Integer price;
     private Integer quantity;
     private Long storeId;
     private List<String> listImages;
     private Integer rating;
-    private Integer sales;
 }

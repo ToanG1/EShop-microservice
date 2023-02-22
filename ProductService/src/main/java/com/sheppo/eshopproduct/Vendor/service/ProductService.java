@@ -195,4 +195,14 @@ public class ProductService {
                     log.info("Product {} is not available", updateProductRequest.getId());
                 });
     }
+    public void minusQuantityAfterOrder(String productId, int quantity){
+        productRepository.findById(productId).ifPresentOrElse(
+                product -> {
+                    product.setQuantity(product.getQuantity() - quantity);
+                    productRepository.save(product);
+                    log.info("Product {} quantity is minus {} successfully", productId, quantity);
+                },
+                () -> log.info("Product {} is not available", productId)
+        );
+    }
 }

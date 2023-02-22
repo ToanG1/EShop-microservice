@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController("UserFollowProductController")
-@RequestMapping("api/user/followProduct")
+@RequestMapping("api/user/user/followProduct")
 @RequiredArgsConstructor
 public class UserFollowProductController {
 

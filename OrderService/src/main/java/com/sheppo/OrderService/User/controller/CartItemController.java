@@ -8,7 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("UserCartItemController")
-@RequestMapping("api/user/cartItem")
+@RequestMapping("api/order/user/cartItem")
 @RequiredArgsConstructor
 public class CartItemController {
 

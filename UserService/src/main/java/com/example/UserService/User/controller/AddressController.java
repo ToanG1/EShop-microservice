@@ -4,6 +4,7 @@ import com.example.UserService.User.dto.Address.Request.CreateAddressRequest;
 import com.example.UserService.User.dto.Address.Request.DeleteAddressRequest;
 import com.example.UserService.User.dto.Address.Request.FindAddressRequest;
 import com.example.UserService.User.dto.Address.Request.UpdateAddressRequest;
+import com.example.UserService.User.dto.Address.Response.AddressDto;
 import com.example.UserService.User.dto.Address.Response.ListAddressResponse;
 import com.example.UserService.User.service.AddressService;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/user/address")
+@RequestMapping("api/user/user/address")
 @RequiredArgsConstructor
 public class AddressController {
 
@@ -27,6 +28,12 @@ public class AddressController {
     @ResponseStatus(HttpStatus.OK)
     public ListAddressResponse findAllByUid(@RequestBody FindAddressRequest findAddressRequest){
         return addressService.findAllByUid(findAddressRequest);
+    }
+
+    @GetMapping("/addressId")
+    @ResponseStatus(HttpStatus.OK)
+    public AddressDto findById(@RequestParam Long id ){
+        return addressService.findById(id);
     }
 
     @PutMapping

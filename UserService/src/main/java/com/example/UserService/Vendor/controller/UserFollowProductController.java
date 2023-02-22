@@ -9,7 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("VendorFollowProductController")
-@RequestMapping("api/vendor/followProduct")
+@RequestMapping("api/user/vendor/followProduct")
 @RequiredArgsConstructor
 public class UserFollowProductController {
 

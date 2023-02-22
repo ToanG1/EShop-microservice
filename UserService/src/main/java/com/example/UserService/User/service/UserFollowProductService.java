@@ -21,7 +21,7 @@ import java.util.*;
 @Slf4j
 public class UserFollowProductService {
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClient;
 
     private final ProductService productService;
 
@@ -64,8 +64,8 @@ public class UserFollowProductService {
         List<String> stringList = ufpRepository.findAllByUserUid
                         (ffpRequest.getUid(), PageRequest.of(ffpRequest.getCurrentPage(), ffpRequest.getSize()))
                 .stream().map(userFollowProduct -> userFollowProduct.getProductId()).toList();
-        ProductDto[] response = webClient.get()
-                .uri("http://localhost:8080/api/user/product/listProduct",
+        ProductDto[] response = webClient.build().get()
+                .uri("http://ProductService/api/product/user/product/listProduct",
                         uriBuilder -> uriBuilder.queryParam("productIdlist", stringList).build())
                 .retrieve()
                 .bodyToMono(ProductDto[].class)

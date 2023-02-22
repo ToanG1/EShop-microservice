@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
-@RequestMapping("api/admin/voucher")
+@RequestMapping("api/order/admin/voucher")
 @RequiredArgsConstructor
 public class VoucherController {
 

@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("AdminShippingController")
-@RequestMapping("api/admin/shipping")
+@RequestMapping("api/order/admin/shipping")
 @RequiredArgsConstructor
 public class ShippingController {
 

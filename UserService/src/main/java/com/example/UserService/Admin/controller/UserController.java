@@ -6,7 +6,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("AdminUserController")
-@RequestMapping("api/admin/user")
+@RequestMapping("api/user/admin/user")
 @RequiredArgsConstructor
 public class UserController {
 

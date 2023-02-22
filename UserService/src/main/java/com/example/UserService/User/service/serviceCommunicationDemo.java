@@ -12,11 +12,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class serviceCommunicationDemo {
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClient;
 
     public void findUser() {
-        String content = webClient.get()
-                .uri("http://localhost:8080/api/user/product/test")
+        String content = webClient.build().get()
+                .uri("http://ProductService/api/product/user/product/test")
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
@@ -24,7 +24,7 @@ public class serviceCommunicationDemo {
     }
     public void findList(){
         List<String> stringList = new ArrayList<>();
-        User[] response = webClient.get()
+        User[] response = webClient.build().get()
                 .uri("url", uriBuilder -> uriBuilder.queryParam("key", stringList).build())
                 .retrieve()
                 .bodyToMono(User[].class)

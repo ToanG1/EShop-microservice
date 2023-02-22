@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("vendorProductController")
-@RequestMapping("api/vendor/product")
+@RequestMapping("api/product/vendor/product")
 @RequiredArgsConstructor
 public class ProductController {
     public final ProductService productService;
@@ -32,6 +32,12 @@ public class ProductController {
     @ResponseStatus(HttpStatus.OK)
     public void updateProduct(@RequestBody UpdateProductRequest updateProductRequest){
         productService.updateProduct(updateProductRequest);
+    }
+
+    @PutMapping("/afterOrder")
+    @ResponseStatus(HttpStatus.OK)
+    public void minusQuantityAfterOrder(@RequestParam String productId, Integer quantity){
+        productService.minusQuantityAfterOrder(productId, quantity);
     }
 
     @PutMapping ("/switchSelling")

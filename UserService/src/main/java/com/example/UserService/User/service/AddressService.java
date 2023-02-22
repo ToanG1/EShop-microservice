@@ -14,6 +14,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service("UserAddressService")
 @RequiredArgsConstructor
 @Slf4j
@@ -84,5 +86,11 @@ public class AddressService {
                 },
                 () -> log.info("Address {} is is not available", deleteAddressRequest.getId())
         );
+    }
+
+    public AddressDto findById(Long id) {
+        Optional<Address> address = addressRepository.findById(id);
+        if (address.isPresent()) return mapToAddressDto(address.get());
+        else return null;
     }
 }

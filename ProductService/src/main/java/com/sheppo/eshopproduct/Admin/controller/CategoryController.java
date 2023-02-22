@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("adminCategoryController")
-@RequestMapping("api/admin/category")
+@RequestMapping("api/product/admin/category")
 @RequiredArgsConstructor
 public class CategoryController {
 

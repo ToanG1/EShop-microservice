@@ -11,7 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RestController("VendorStoreController")
-@RequestMapping("api/vendor/store")
+@RequestMapping("api/user/vendor/store")
 @RequiredArgsConstructor
 public class StoreController {
 

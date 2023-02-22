@@ -37,9 +37,12 @@ public class UserService {
 
     public UserResponse findUser(String uid) {
         final UserResponse[] userResponse = {new UserResponse()};
-        userRepository.findByUid(uid).ifPresent(
+        userRepository.findByUid(uid).ifPresentOrElse(
                 user ->{
                     userResponse[0] = mapToUserResponse(user);
+                },
+                () ->{
+                    userResponse[0] = null;
                 }
         );
         return userResponse[0];

@@ -17,14 +17,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class ProductService {
 
-    private final WebClient webClient;
+    private final WebClient.Builder webClient;
 
     public boolean isProductAvailable(String id){
         Map<String, String> bodyMap = new HashMap();
         bodyMap.put("productId",id);
 
-        int countProduct = webClient.post()
-                .uri("http://localhost:8080/api/user/product")
+        int countProduct = webClient.build().post()
+                .uri("http://ProductService/api/product/user/product")
                 .body(BodyInserters.fromValue(bodyMap))
                 .retrieve()
                 .bodyToMono(Integer.class)

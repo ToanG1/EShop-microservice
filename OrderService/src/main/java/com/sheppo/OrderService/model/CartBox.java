@@ -18,6 +18,7 @@ public class CartBox {
     private Long id;
     private Long storeId;
     private Date createAt;
+    private Date updateAt;
     @ManyToOne
     @JoinColumn(name = "cartId")
     private Cart cart;

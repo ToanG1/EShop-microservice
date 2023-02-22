@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController("adminStyleController")
-@RequestMapping("api/admin/style")
+@RequestMapping("api/product/admin/style")
 @RequiredArgsConstructor
 public class StyleController {
 
