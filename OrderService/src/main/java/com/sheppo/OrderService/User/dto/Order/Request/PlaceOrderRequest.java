@@ -14,7 +14,7 @@ public class PlaceOrderRequest {
     private Long addressId;
     private String note;
     private Long shippingId;
-    private String payment;
+    private String payment = "COD";
     private String productVoucher;
     private String shippingVoucher;
     private List<Long> cartItemIdList;

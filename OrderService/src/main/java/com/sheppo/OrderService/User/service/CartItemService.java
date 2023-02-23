@@ -72,7 +72,7 @@ public class CartItemService {
 
             //Check is product valid from product service
             ProductDto product = productService.findProduct(createCartItemRequest.getProductId());
-            if (product != null) {
+            if (product != null && product.getQuantity() >= createCartItemRequest.getQuantity()) {
 
                 //Check do cart have cart box for store of product
                 if (!cartBoxRepository.existsByCartIdAndStoreId(cart.getId(), product.getStoreId()))

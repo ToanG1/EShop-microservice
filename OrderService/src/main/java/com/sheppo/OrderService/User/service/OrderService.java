@@ -58,13 +58,14 @@ public class OrderService {
                 productDtoList.forEach(productDto -> {
                     if (!storeIdList.contains(productDto.getStoreId())) storeIdList.add(productDto.getStoreId());
                 });
-
                 //place orders
                 orderUrl = storeIdList.stream().map(store -> {
 
                     //Find products follow storeid
                     List<ProductDto> products = productDtoList.stream()
                             .filter(productDto -> productDto.getStoreId().equals(store)).toList();
+                    //Map cartItem to Products
+                    List<ProductDto> mapedProducts = maptoOrderProduct(products, cartItems);
 
                     Optional<Shipping> shipping = shippingRepository.findById(request.getShippingId());
                     if (shipping.isPresent()) {
@@ -77,7 +78,7 @@ public class OrderService {
                                 .phoneNumber(addressDto.getPhoneNumber())
                                 .note(request.getNote() != null ? request.getNote() : "")
                                 .orderStatus(0)
-                                .orderValue(calculateOrderValue(products, cartItems, request.getProductVoucher()))
+                                .orderValue(calculateOrderValue(mapedProducts, request.getProductVoucher()))
                                 .shippingCost(calculateShippingCost(shipping.get(), request.getShippingVoucher()))
                                 .payment(request.getPayment() != null ? checkPaymentValid(request.getPayment()) ?
                                         request.getPayment() : "COD" : "COD")
@@ -89,17 +90,15 @@ public class OrderService {
                         orderRepository.save(order);
                         log.info("Order {} is saved successfully", order.getId());
 
-                        //Save oderItem and delete cartItem
-                        products.forEach(productDto -> {
-                            //map cartitem quantity to product dto to save orderItem
-                            CartItem cartItem1 = cartItems.stream().filter(cartItem ->
-                                            cartItem.getProductId().equals(productDto.getId()) &&
-                                                    productDto.getQuantity() >= cartItem.getQuantity()).findFirst().get();
-                            orderItemRepository.save(mapToOrderItem(productDto, cartItem1.getQuantity(), order));
-                            //Minus quantity of product
-                            productService.minusQuantityAfterOrder(cartItem1.getProductId(), cartItem1.getQuantity());
-                            //Delete cartItem after ordered successfully
-                            cartItemService.deleteCartItem(cartItem1);
+                        mapedProducts.forEach(productDto -> {
+                            if (productDto != null) {
+                                //Save oderItem
+                                orderItemRepository.save(mapToOrderItem(productDto, order));
+                                //Minus quantity of product
+                                productService.minusQuantityAfterOrder(productDto.getId(), productDto.getCartItemQuantity());
+                                //Delete cartItem after ordered successfully
+                                cartItemService.deleteCartItem(productDto.getCartItemId());
+                            }
                         });
 
                         //call api for payment to update isPaid
@@ -113,6 +112,23 @@ public class OrderService {
         return orderUrl;
     }
 
+    private List<ProductDto> maptoOrderProduct(List<ProductDto> products, List<CartItem> cartItems) {
+        List<ProductDto> productDtoList = products.stream().map(productDto -> {
+            Optional<CartItem> cartItem = cartItems.stream().filter(cartItem1 -> cartItem1.getProductId().equals(productDto.getId()) &&
+                    productDto.getQuantity() >= cartItem1.getQuantity()).findFirst();
+            if (cartItem.isPresent()) {
+                productDto.setCartItemQuantity(cartItem.get().getQuantity());
+                productDto.setCartItemId(cartItem.get().getId());
+                return productDto;
+            }else {
+                log.info("Product {} is not available", productDto.getId());
+                return null;
+            }
+        }).toList();
+        return productDtoList;
+
+    }
+
     private boolean checkPaymentValid(String payment) {
         return payment.equals("zaloPay") || payment.equals("banking") || payment.equals("visa");
     }
@@ -122,24 +138,20 @@ public class OrderService {
         return (int) (shipping.getShippingCost() * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
     }
 
-    private OrderItem mapToOrderItem(ProductDto productDto, int quantity, Order order) {
+    private OrderItem mapToOrderItem(ProductDto productDto, Order order) {
         return OrderItem.builder()
                 .productId(productDto.getId())
                 .productName(productDto.getName())
                 .productValue(productDto.getPrice())
                 .productAvatar(productDto.getListImages().get(0))
-                .quantity(quantity)
+                .quantity(productDto.getCartItemQuantity())
                 .order(order)
                 .createAt(new Date())
                 .build();
     }
 
-    private int calculateOrderValue(List<ProductDto> products,List<CartItem> cartItems, String voucherCode) {
-        int orderValue = products.stream().mapToInt(product ->{
-            CartItem cartItem1 = cartItems.stream().filter(cartItem ->
-                    cartItem.getProductId().equals(product.getId())).findFirst().get();
-            return product.getPrice() * cartItem1.getQuantity();
-        }).sum();
+    private int calculateOrderValue(List<ProductDto> products, String voucherCode) {
+        int orderValue = products.stream().mapToInt(product -> product.getPrice() * product.getCartItemQuantity()).sum();
         Optional<Voucher> voucher = voucherRepository.findByCode(voucherCode);
         return (int) (orderValue * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
     }

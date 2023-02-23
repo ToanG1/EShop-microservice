@@ -29,6 +29,7 @@ public class StoreService {
                     .isOpen(store.get().getIsOpen())
                     .avatar(store.get().getAvatar())
                     .rating(store.get().getRating())
+                    .createAt(store.get().getCreateAt())
                     .build();
         else return new StoreResponse();
     }

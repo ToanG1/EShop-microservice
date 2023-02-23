@@ -19,4 +19,6 @@ public class ProductDto {
     private Long storeId;
     private List<String> listImages;
     private Integer rating;
+    private Integer cartItemQuantity;
+    private Long cartItemId;
 }
