@@ -1,4 +1,13 @@
 # ToanG1-EShop-microservice
+
+Goals: 
+- tim hieu ve microservice, multiple database
+- internal service communications (webclient webflux)
+- discovery service (eureke)
+- api gate way (spring cloud gateway) 
+
+
+
 Chức năng cơ bản 
 
 Eshop project
@@ -95,6 +104,12 @@ db: postgresql
 
 User:
 
++Cart:
+- lay cart hien thi theo cartBox cartItem
+
++CartBox:
+- xoa cartBox chua cac cartItem
+
 +CartItem: 
 - tao gio hang cho khach hang moi
 - them cartbox cho cartitem cua shop chua ton tai trong cart
@@ -104,6 +119,7 @@ User:
 - xoa cartBox
 
 +Order:
+-them order
 
 Vendor:
 
