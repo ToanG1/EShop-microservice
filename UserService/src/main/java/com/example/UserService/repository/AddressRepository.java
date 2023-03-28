@@ -11,6 +11,5 @@ import java.util.Optional;
 public interface AddressRepository extends JpaRepository<Address, Long> {
     Page<Address> findAllByUserUid(String uid, Pageable pageable);
     Integer countAddressByUserUid(String uid);
-
     Optional<Address> findByUserUidAndId(String uid, Long id);
 }

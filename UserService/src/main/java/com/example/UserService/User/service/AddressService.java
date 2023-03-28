@@ -93,4 +93,10 @@ public class AddressService {
         if (address.isPresent()) return mapToAddressDto(address.get());
         else return null;
     }
+
+    public AddressDto findByIdAndUid(Long id, String uid) {
+        Optional<Address> address = addressRepository.findByUserUidAndId(uid, id);
+        if (address.isPresent()) return mapToAddressDto(address.get());
+        else return null;
+    }
 }

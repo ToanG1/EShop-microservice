@@ -87,7 +87,7 @@ public class ProductService {
     }
 
     public List<ProductDto> findByProductIdList(List<String> productIdList){
-        return productRepository.findAllById(productIdList).stream().map(this::mapToProductRespone).toList();
+        return productRepository.findAllByIdAndIsSellingIsTrueAndIsActiveIsTrue(productIdList).stream().map(this::mapToProductRespone).toList();
     }
 
 }

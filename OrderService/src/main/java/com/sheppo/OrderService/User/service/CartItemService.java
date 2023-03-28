@@ -77,32 +77,35 @@ public class CartItemService {
                 //Check do cart have cart box for store of product
                 if (!cartBoxRepository.existsByCartIdAndStoreId(cart.getId(), product.getStoreId()))
                     createCartBox(product.getStoreId(), cart);
-                CartBox cartBox = cartBoxRepository.findByCartIdAndStoreId(cart.getId(), product.getStoreId());
-
-                //Check is CartItem existed
-                if (cartItemRepository.existsByCartBoxIdAndProductId(cartBox.getId(), product.getId())) {
-                    //Update quantity
-                    CartItem cartItem = cartItemRepository.findByCartBoxIdAndProductId(cartBox.getId(), product.getId());
-                    cartItem.setQuantity(cartItem.getQuantity() + createCartItemRequest.getQuantity());
-                    CartBox cartBox1 = cartItem.getCartBox();
-                    cartBox1.setUpdateAt(new Date());
-                    cartBoxRepository.save(cartBox1);
-                    cartItemRepository.save(cartItem);
-                    log.info("Cart Item {} updated quantity successfully", cartItem.getId());
-                } else {
-                    //Add cartItem
-                    CartItem cartItem = CartItem.builder()
-                            .productId(createCartItemRequest.getProductId())
-                            .quantity(createCartItemRequest.getQuantity())
-                            .cartBox(cartBox)
-                            .createAt(new Date())
-                            .updateAt(new Date())
-                            .build();
-                    cartBox.setUpdateAt(new Date());
-                    cartBoxRepository.save(cartBox);
-                    cartItemRepository.save(cartItem);
-                    log.info("Add Cart Item {} successfully", cartItem.getId());
-                }
+                cartBoxRepository.findByCartIdAndStoreId(cart.getId(), product.getStoreId()).ifPresentOrElse(
+                        cartBox -> {
+                            //Check is CartItem existed
+                            if (cartItemRepository.existsByCartBoxIdAndProductId(cartBox.getId(), product.getId())) {
+                                //Update quantity
+                                CartItem cartItem = cartItemRepository.findByCartBoxIdAndProductId(cartBox.getId(), product.getId());
+                                cartItem.setQuantity(cartItem.getQuantity() + createCartItemRequest.getQuantity());
+                                CartBox cartBox1 = cartItem.getCartBox();
+                                cartBox1.setUpdateAt(new Date());
+                                cartBoxRepository.save(cartBox1);
+                                cartItemRepository.save(cartItem);
+                                log.info("Cart Item {} updated quantity successfully", cartItem.getId());
+                            } else {
+                                //Add cartItem
+                                CartItem cartItem = CartItem.builder()
+                                        .productId(createCartItemRequest.getProductId())
+                                        .quantity(createCartItemRequest.getQuantity())
+                                        .cartBox(cartBox)
+                                        .createAt(new Date())
+                                        .updateAt(new Date())
+                                        .build();
+                                cartBox.setUpdateAt(new Date());
+                                cartBoxRepository.save(cartBox);
+                                cartItemRepository.save(cartItem);
+                                log.info("Add Cart Item {} successfully", cartItem.getId());
+                            }
+                        },
+                        () ->log.warn("CartBox for store {} is not available", product.getStoreId())
+                );
             } else log.info("Product {} is not available", createCartItemRequest.getProductId());
         } else log.info("User {} is not available", createCartItemRequest.getUid());
     }

@@ -41,7 +41,7 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public AddressDto isUseValidAndFindAddress(@RequestParam String uid, Long addressId){
         if(userService.findUser(uid) != null)
-        return addressService.findById(addressId);
+        return addressService.findByIdAndUid(addressId, uid);
         else return null;
     }
 

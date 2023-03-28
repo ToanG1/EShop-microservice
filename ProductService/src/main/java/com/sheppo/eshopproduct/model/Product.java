@@ -20,8 +20,8 @@ public class Product {
     private Integer price;
     private Integer quantity;
     private String storeId;
-    private Boolean is_selling;
-    private Boolean is_active;
+    private Boolean isSelling;
+    private Boolean isActive;
     private List<String> listImages;
     private Category category;
     private List<Style> listStyle;

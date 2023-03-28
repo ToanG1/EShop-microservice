@@ -43,8 +43,8 @@ public class ProductService {
                 .quantity(0)
                 .price(createProductRequest.getPrice())
                 .storeId(createProductRequest.getStoreId())
-                .is_selling(false)
-                .is_active(false)
+                .isSelling(false)
+                .isActive(false)
                 .listImages(createProductRequest.getListImages())
                 .category(mongoTemplate.findById(createProductRequest.getCategoryId(), Category.class))
                 .listStyle(styleRepository.findAllById(createProductRequest.getListStyleId()))
@@ -114,8 +114,8 @@ public class ProductService {
                 .quantity(product.getQuantity())
                 .price(product.getPrice())
                 .storeId(product.getStoreId())
-                .is_selling(product.getIs_selling())
-                .is_active(product.getIs_active())
+                .is_selling(product.getIsSelling())
+                .is_active(product.getIsActive())
                 .listImages(product.getListImages())
                 .category(product.getCategory())
                 .listStyle(product.getListStyle())
@@ -145,8 +145,8 @@ public class ProductService {
                                 });
                     updatedProduct.setListStyle(updateProductRequest.getListStyle() != null ?
                             styleRepository.findAllById(updateProductRequest.getListStyle()) : updatedProduct.getListStyle());
-                    updatedProduct.setIs_active(false);
-                    updatedProduct.setIs_selling(false);
+                    updatedProduct.setIsActive(false);
+                    updatedProduct.setIsSelling(false);
                     updatedProduct.setUpdateAt(new Date());
                     productRepository.save(updatedProduct);
                     log.info("Product {} is updated successfully", updatedProduct.getId());
@@ -187,7 +187,7 @@ public class ProductService {
 
     public void changeIs_Selling(UpdateProductRequest updateProductRequest) {
         productRepository.findById(updateProductRequest.getId()).ifPresentOrElse(updatedProduct -> {
-                    updatedProduct.setIs_selling(!updatedProduct.getIs_selling());
+                    updatedProduct.setIsSelling(!updatedProduct.getIsSelling());
                     productRepository.save(updatedProduct);
                     log.info("Switching selling mode of {} successfully", updatedProduct.getId());
                 },

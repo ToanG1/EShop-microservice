@@ -21,7 +21,7 @@ public class UserService {
         return isValid;
     }
 
-    public AddressDto isUseAndAddressValid(String uid, Long addressId){
+    public AddressDto isUserAndAddressValid(String uid, Long addressId){
         AddressDto addressDto = webClient.build().get()
                 .uri("http://UserService/api/user/user/user/isUserAddressValid", uriBuilder -> uriBuilder.
                         queryParam("uid", uid).queryParam("addressId", addressId).build())

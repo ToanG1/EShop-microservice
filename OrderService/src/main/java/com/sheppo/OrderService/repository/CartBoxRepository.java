@@ -10,7 +10,7 @@ import java.util.Optional;
 
 public interface CartBoxRepository extends JpaRepository<CartBox, Long> {
     boolean existsByCartIdAndStoreId(long cartId, long storeId);
-    CartBox findByCartIdAndStoreId(long cartId, long storeId);
+    Optional<CartBox> findByCartIdAndStoreId(long cartId, long storeId);
     List<CartBox> findAllByCartOrderByUpdateAtDesc(Cart cart);
     int countById(long cartBoxId);
 

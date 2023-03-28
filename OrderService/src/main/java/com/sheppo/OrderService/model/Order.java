@@ -20,6 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String uid;
+    private Long storeId;
     private Long addressId;
     private String receiverName;
     private String receiverAddress;
@@ -30,6 +31,7 @@ public class Order {
     private Integer shippingCost;
     private String payment;
     private Boolean isPaid;
+    private String paymentUrl;
     private Date createAt;
     private Date updateAt;
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "order")

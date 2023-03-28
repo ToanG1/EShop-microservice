@@ -35,8 +35,8 @@ public class ProductService {
                 .price(product.getPrice())
                 .quantity(product.getQuantity())
                 .storeId(product.getStoreId())
-                .is_selling(product.getIs_selling())
-                .is_active(product.getIs_active())
+                .is_selling(product.getIsSelling())
+                .is_active(product.getIsActive())
                 .listImages(product.getListImages())
                 .category(product.getCategory())
                 .listStyle(product.getListStyle())
@@ -113,9 +113,9 @@ public class ProductService {
     public void updateActiveProduct(UpdateActiveProductRequest updateActiveProductRequest) {
         productRepository.findById(updateActiveProductRequest.getId()).ifPresentOrElse(
                 updatedProduct -> {
-                    updatedProduct.setIs_active(!updatedProduct.getIs_active());
+                    updatedProduct.setIsActive(!updatedProduct.getIsActive());
                     productRepository.save(updatedProduct);
-                    log.info("{} status of product {} successfully", updatedProduct.getIs_active() ?
+                    log.info("{} status of product {} successfully", updatedProduct.getIsActive() ?
                             "Active" : "Unactive", updatedProduct.getId());
                 },
                 () -> {

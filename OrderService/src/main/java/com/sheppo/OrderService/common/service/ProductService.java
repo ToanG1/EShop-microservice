@@ -27,7 +27,7 @@ public class ProductService {
     public ProductDto findProduct(String productId){
         List<String> productIdList = new ArrayList<>();
         productIdList.add(productId);
-        return findProductList(productIdList).get(0);
+        return findProductList(productIdList).isEmpty() ? null : findProductList(productIdList).get(0) ;
     }
 
     public void minusQuantityAfterOrder(String productId, int quantity){

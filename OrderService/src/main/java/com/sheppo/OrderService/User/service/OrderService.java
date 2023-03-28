@@ -1,6 +1,12 @@
 package com.sheppo.OrderService.User.service;
 
+import com.sheppo.OrderService.User.dto.Order.Request.DeleteOrderRequest;
+import com.sheppo.OrderService.User.dto.Order.Request.FindOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.PlaceOrderRequest;
+import com.sheppo.OrderService.User.dto.Order.Request.UpdateOrderRequest;
+import com.sheppo.OrderService.User.dto.Order.Response.OrderDto;
+import com.sheppo.OrderService.User.dto.Order.Response.OrderItemDto;
+import com.sheppo.OrderService.User.dto.Order.Response.OrderResponse;
 import com.sheppo.OrderService.common.dto.Address.Response.AddressDto;
 import com.sheppo.OrderService.common.dto.Product.Response.ProductDto;
 import com.sheppo.OrderService.common.service.ProductService;
@@ -10,6 +16,7 @@ import com.sheppo.OrderService.model.*;
 import com.sheppo.OrderService.repository.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,7 +24,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
-@Service
+@Service("UserOrderService")
 @Slf4j
 @RequiredArgsConstructor
 public class OrderService {
@@ -44,7 +51,7 @@ public class OrderService {
         List<String> orderUrl = new ArrayList<>();
 
         //Check is user valid
-        AddressDto addressDto = userService.isUseAndAddressValid(request.getUid(), request.getAddressId());
+        AddressDto addressDto = userService.isUserAndAddressValid(request.getUid(), request.getAddressId());
         if (addressDto != null) {
 
             //Check is Product list valid
@@ -69,10 +76,11 @@ public class OrderService {
 
                     Optional<Shipping> shipping = shippingRepository.findById(request.getShippingId());
                     if (shipping.isPresent()) {
-                        //save order
+                        //Create order and save order
                         Order order = Order.builder()
                                 .uid(request.getUid())
                                 .addressId(request.getAddressId())
+                                .storeId(store)
                                 .receiverAddress(addressDto.getReceiverAddress())
                                 .receiverName(addressDto.getReceiverName())
                                 .phoneNumber(addressDto.getPhoneNumber())
@@ -101,9 +109,13 @@ public class OrderService {
                             }
                         });
 
-                        //call api for payment to update isPaid
-                        if (request.getPayment().equals("zaloPay")) return zaloPayService.createOrder(order.getId());
-                        else return null;
+                        //call api for payment and update order
+                        if (request.getPayment().equals("zaloPay")) {
+                            String url = zaloPayService.createOrder(order.getId());
+                            order.setPaymentUrl(url);
+                            orderRepository.save(order);
+                            return url;
+                        }else return null;
                     } else log.info("Shipping {} is not available", request.getShippingId());
                     return null;
                 }).toList();
@@ -154,5 +166,98 @@ public class OrderService {
         int orderValue = products.stream().mapToInt(product -> product.getPrice() * product.getCartItemQuantity()).sum();
         Optional<Voucher> voucher = voucherRepository.findByCode(voucherCode);
         return (int) (orderValue * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
+    }
+
+    public String updateOrder(UpdateOrderRequest updateOrderRequest) {
+        Optional<Order> order = orderRepository.findByUidAndId(updateOrderRequest.getUid(), updateOrderRequest.getId());
+        if (order.isPresent() && order.get().getOrderStatus() == 0){
+            if (updateOrderRequest.getAddressId() != null) {
+                AddressDto addressDto = userService.isUserAndAddressValid(updateOrderRequest.getUid(),
+                        updateOrderRequest.getAddressId());
+                order.get().setAddressId(addressDto.getId());
+                order.get().setReceiverName(addressDto.getReceiverName());
+                order.get().setReceiverAddress(addressDto.getReceiverAddress());
+                order.get().setPhoneNumber(addressDto.getPhoneNumber());
+            }
+            String url = null;
+            if (updateOrderRequest.getPayment() != null && order.get().getPayment().equals("COD")) {
+                url = zaloPayService.createOrder(order.get().getId());
+            }
+            order.get().setNote(updateOrderRequest.getNote() != null ? updateOrderRequest.getNote() : order.get().getNote());
+            order.get().setUpdateAt(new Date());
+            orderRepository.save(order.get());
+            return url;
+        } else{
+            log.warn("Order {} is not available", updateOrderRequest.getId());
+            return null;
+        }
+    }
+
+    public OrderResponse findOrder(FindOrderRequest findOrderRequest) {
+        if (userService.isUserValid(findOrderRequest.getUid())){
+            List<Order> orderList = orderRepository.findAllByUidAndOrderStatus(findOrderRequest.getUid(), findOrderRequest.getOrderStatus(),
+                    PageRequest.of(findOrderRequest.getCurrentPage(), findOrderRequest.getSize())).getContent();
+            List<OrderDto> orderDtos = orderList.stream().map(this::mapToOrderDto).toList();
+            return OrderResponse.builder()
+                    .orderStatus(findOrderRequest.getOrderStatus())
+                    .orderDtoList(orderDtos)
+                    .currentPage(findOrderRequest.getCurrentPage())
+                    .totalPage((int) Math.ceil((float) orderRepository.countAllByUidAndOrderStatus(findOrderRequest.getUid(), findOrderRequest.getOrderStatus()) /
+                            findOrderRequest.getSize()))
+                    .size(findOrderRequest.getSize())
+                    .build();
+        } else {
+            log.warn("User {} is not available", findOrderRequest.getUid());
+            return null;
+        }
+    }
+
+    private OrderDto  mapToOrderDto(Order order) {
+        List<OrderItemDto> orderItemDtos = order.getOrderItemList().stream().map(this::mapToOrderItemDto).toList();
+        return OrderDto.builder()
+                .id(order.getId())
+                .uid(order.getUid())
+                .receiverName(order.getReceiverName())
+                .receiverAddress(order.getReceiverAddress())
+                .phoneNumber(order.getPhoneNumber())
+                .note(order.getNote())
+                .orderStatus(order.getOrderStatus())
+                .orderValue(order.getOrderValue())
+                .shippingCost(order.getShippingCost())
+                .payment(order.getPayment())
+                .isPaid(order.getIsPaid())
+                .paymentUrl(order.getPaymentUrl())
+                .createAt(order.getCreateAt())
+                .updateAt(order.getUpdateAt())
+                .orderItemDtoList(orderItemDtos)
+                .build();
+    }
+
+    private OrderItemDto mapToOrderItemDto(OrderItem orderItem) {
+        return OrderItemDto.builder()
+                .productId(orderItem.getProductId())
+                .productName(orderItem.getProductName())
+                .productAvatar(orderItem.getProductAvatar())
+                .productValue(orderItem.getProductValue())
+                .quantity(orderItem.getQuantity())
+                .build();
+    }
+
+    public void cancelOrder(DeleteOrderRequest deleteOrderRequest) {
+        if (userService.isUserValid(deleteOrderRequest.getUid())){
+            orderRepository.findByUidAndId(deleteOrderRequest.getUid(), deleteOrderRequest.getId()).ifPresentOrElse(
+                    order -> {
+                        if (order.getOrderStatus() == 0) {
+                            order.setOrderStatus(3);
+                            order.setUpdateAt(new Date());
+                            orderRepository.save(order);
+                            log.info("Order {} is canceled successfully", deleteOrderRequest.getId());
+                        } else {
+                            log.warn("Order {} can not be canceled", deleteOrderRequest.getId());
+                        }
+                    },
+                    () -> log.warn("Order {} is not available", deleteOrderRequest.getId())
+            );
+        }
     }
 }
