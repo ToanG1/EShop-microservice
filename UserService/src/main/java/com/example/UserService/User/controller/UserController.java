@@ -31,6 +31,12 @@ public class UserController {
         return userService.findUser(uid);
     }
 
+    @GetMapping("/username")
+    @ResponseStatus(HttpStatus.OK)
+    public UserResponse findUserByUsername(@RequestParam String username){
+        return userService.findUserByUsername(username);
+    }
+
     @GetMapping("/isUserValid")
     @ResponseStatus(HttpStatus.OK)
     public Boolean isUserValid(@RequestParam String uid){

@@ -15,12 +15,14 @@
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
+      <module name="AuthService" target="19" />
       <module name="OrderService" target="19" />
     </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
       <module name="ApiGateway" options="-parameters" />
+      <module name="AuthService" options="-parameters" />
       <module name="DiscoveryService" options="-parameters" />
       <module name="EShop4Order" options="-parameters" />
       <module name="OrderService" options="-parameters" />

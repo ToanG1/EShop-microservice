@@ -36,16 +36,10 @@ public class UserService {
     }
 
     public UserResponse findUser(String uid) {
-        final UserResponse[] userResponse = {new UserResponse()};
-        userRepository.findByUid(uid).ifPresentOrElse(
-                user ->{
-                    userResponse[0] = mapToUserResponse(user);
-                },
-                () ->{
-                    userResponse[0] = null;
-                }
-        );
-        return userResponse[0];
+        Optional<User> user = userRepository.findByUid(uid);
+        if (user.isPresent())
+            return mapToUserResponse(user.get());
+        else return null;
     }
 
     private UserResponse mapToUserResponse(User user) {
@@ -76,5 +70,12 @@ public class UserService {
                     log.info("User {} is not available", updateUserRequest.getUid());
                 }
         );
+    }
+
+    public UserResponse findUserByUsername(String username) {
+        Optional<User> user = userRepository.findByName(username);
+        if (user.isPresent())
+            return mapToUserResponse(user.get());
+        else return null;
     }
 }

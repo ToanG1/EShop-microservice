@@ -19,8 +19,9 @@ public class User {
     private String name;
     private String email;
     private Integer phoneNumber;
-    private String uid; //for fire base authencation
-    private Integer role;
+    private String password;
+    private String uid;
+    private Integer role; //0 for customer, 1 for vendor, 2 for admin
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "user")
     private List<Address> addressList = new java.util.ArrayList<>();
     private String avatar;
