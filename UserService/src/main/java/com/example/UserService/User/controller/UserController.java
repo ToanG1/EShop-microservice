@@ -39,7 +39,7 @@ public class UserController {
 
     @GetMapping("/isUserAddressValid")
     @ResponseStatus(HttpStatus.OK)
-    public AddressDto isUseValidAndFindAddress(@RequestParam String uid, Long addressId){
+    public AddressDto isUserValidAndFindAddress(@RequestParam String uid, Long addressId){
         if(userService.findUser(uid) != null)
         return addressService.findByIdAndUid(addressId, uid);
         else return null;
