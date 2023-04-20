@@ -4,6 +4,7 @@ import com.example.UserService.User.dto.User.Request.CreateUserRequest;
 import com.example.UserService.User.dto.User.Request.UpdateUserRequest;
 import com.example.UserService.User.dto.User.Response.UserResponse;
 import com.example.UserService.model.User;
+import com.example.UserService.model.enums.UserRole;
 import com.example.UserService.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -27,7 +28,7 @@ public class UserService {
                 .uid(createUserRequest.getUid())
                 .avatar(createUserRequest.getAvatar())
                 .point(0)
-                .role(0)
+                .role(UserRole.CUSTOMER)
                 .createAt(new Date())
                 .updateAt(new Date())
                 .build();
@@ -72,10 +73,5 @@ public class UserService {
         );
     }
 
-    public UserResponse findUserByUsername(String username) {
-        Optional<User> user = userRepository.findByName(username);
-        if (user.isPresent())
-            return mapToUserResponse(user.get());
-        else return null;
-    }
+
 }

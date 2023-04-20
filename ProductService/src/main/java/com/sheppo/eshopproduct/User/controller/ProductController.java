@@ -17,7 +17,7 @@ public class ProductController {
 
     public final ProductService productService;
 
-    @GetMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ProductResponse find(@RequestBody FindProductRequest productRequest) {
         return productService.find(productRequest);
@@ -29,7 +29,7 @@ public class ProductController {
         return productService.findByProductIdList(productIdlist);
     }
 
-    @PostMapping
+    @PostMapping("/count")
     @ResponseStatus(HttpStatus.OK)
     public int countProduct(@RequestBody FindProductRequest productRequest) {
         productRequest.setSize(null);

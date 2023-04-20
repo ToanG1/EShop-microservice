@@ -33,56 +33,69 @@ import java.util.Arrays;
 @EnableWebSecurity
 public class SpringSecurityConfiguration {
 
-//	private final UserService userService;
+	private final UserService userService;
 
-//	@Autowired
-//	@Lazy
-//	private JwtAuthenticationFilter jwtAuthenticationFilter;
-//
-//	@Autowired
-//	@Lazy
-//	private AuthenticationProvider authenticationProvider;
+	@Autowired
+	@Lazy
+	private JwtAuthenticationFilter jwtAuthenticationFilter;
 
-//	public SpringSecurityConfiguration(UserService userService) {
-//		this.userService = userService;
-//	}
+	@Autowired
+	@Lazy
+	private AuthenticationProvider authenticationProvider;
+
+	public SpringSecurityConfiguration(UserService userService) {
+		this.userService = userService;
+	}
 
 	@Bean
 	public SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity serverHttpSecurity){
 
 		serverHttpSecurity.cors().and().csrf().disable()
 				.authorizeExchange(exchange -> exchange
+						.pathMatchers("/api/product/admin/**", "/api/order/admin/**", "/api/user/admin/**")
+						.authenticated()
 						.anyExchange()
 						.permitAll());
 		return serverHttpSecurity.build();
 	}
 
-//	@Bean
-//	public UserDetailsService userDetailsService() {
-//		return username -> {
-//			User userEntity = userService.findUserByUsername(username);
-//			if (userEntity == null) {
-//				throw new UsernameNotFoundException("Not user with username = " + username);
-//			}
-//			return (UserDetails) userEntity;
-//		};
-//	}
-//
-//	@Bean
-//	public AuthenticationProvider authenticationProvider() {
-//		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
-//		authenticationProvider.setUserDetailsService(this.userDetailsService());
-//		authenticationProvider.setPasswordEncoder(this.passwordEncoder());
-//		return authenticationProvider;
-//	}
-//
-//	@Bean
-//	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
-//		return authenticationConfiguration.getAuthenticationManager();
-//	}
-//
-//	@Bean
-//	public PasswordEncoder passwordEncoder() {
-//		return new BCryptPasswordEncoder();
-//	}
+	@Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+		configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("*"));
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+
+	@Bean
+	public UserDetailsService userDetailsService() {
+		return username -> {
+			User userEntity = userService.findUserByUsername(username);
+			if (userEntity == null) {
+				throw new UsernameNotFoundException("Not user with username = " + username);
+			}
+			return (UserDetails) userEntity;
+		};
+	}
+
+	@Bean
+	public AuthenticationProvider authenticationProvider() {
+		DaoAuthenticationProvider authenticationProvider = new DaoAuthenticationProvider();
+		authenticationProvider.setUserDetailsService(this.userDetailsService());
+		authenticationProvider.setPasswordEncoder(this.passwordEncoder());
+		return authenticationProvider;
+	}
+
+	@Bean
+	public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+		return authenticationConfiguration.getAuthenticationManager();
+	}
+
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 }

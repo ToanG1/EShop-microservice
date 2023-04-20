@@ -1,6 +1,7 @@
 package com.example.UserService.auth.dto.response;
 
 import com.example.UserService.model.User;
+import com.example.UserService.model.enums.UserRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +16,7 @@ public class UserResponse {
     private String name;
     private String email;
     private Integer phoneNumber;
-    private Integer role;
+    private UserRole role;
     private String avatar;
     private Integer point;
 }

@@ -15,7 +15,7 @@ import java.util.Optional;
 @Service("LoginService")
 @RequiredArgsConstructor
 @Slf4j
-public class LoginService {
+public class AuthService {
 
     private final UserRepository userRepository;
 
@@ -44,5 +44,12 @@ public class LoginService {
             else return new LoginResponse(null, null, "Name or Password is wrong");
         }
         else return new LoginResponse(null, null, "Name or Password is wrong");
+    }
+
+    public UserResponse findUserByUsername(String username) {
+        Optional<User> user = userRepository.findByName(username);
+        if (user.isPresent())
+            return mapToUserResponse(user.get());
+        else return null;
     }
 }
