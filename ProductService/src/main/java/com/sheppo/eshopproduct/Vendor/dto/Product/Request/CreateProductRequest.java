@@ -17,7 +17,7 @@ public class CreateProductRequest {
     private String name;
     private String description;
     private Integer price;
-    private String storeId;
+    private Long storeId;
     private List<String> listImages;
     private String categoryId;
     private List<String> listStyleId;

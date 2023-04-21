@@ -23,6 +23,12 @@ public class ProductController {
         return productService.find(productRequest);
     }
 
+    @GetMapping("/{id}")
+    @ResponseStatus(HttpStatus.OK)
+    public ProductDto findById(@PathVariable String id){
+        return productService.findById(id);
+    }
+
     @GetMapping("/listProduct")
     @ResponseStatus(HttpStatus.OK)
     public List<ProductDto> findByProductIdList(@RequestParam List<String> productIdlist) {

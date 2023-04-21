@@ -19,12 +19,13 @@ public class Product {
     private String description;
     private Integer price;
     private Integer quantity;
-    private String storeId;
+    private Long storeId;
     private Boolean isSelling;
     private Boolean isActive;
     private List<String> listImages;
     private Category category;
     private List<Style> listStyle;
+    private List<Comment> listComment;
     private Integer rating;
     private Integer sales;
     private Date createAt;

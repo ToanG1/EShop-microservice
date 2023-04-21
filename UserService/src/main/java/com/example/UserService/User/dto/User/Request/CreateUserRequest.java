@@ -8,9 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CreateUserRequest {
-    private String uid;
     private String name;
-    private String email;
-    private Integer phoneNumber;
-    private String avatar;
+    private String password;
 }

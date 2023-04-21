@@ -23,10 +23,7 @@ public class UserService {
     public void createUser(CreateUserRequest createUserRequest){
         User user = User.builder()
                 .name(createUserRequest.getName())
-                .email(createUserRequest.getEmail())
-                .phoneNumber(createUserRequest.getPhoneNumber())
-                .uid(createUserRequest.getUid())
-                .avatar(createUserRequest.getAvatar())
+                .password(createUserRequest.getPassword())
                 .point(0)
                 .role(UserRole.CUSTOMER)
                 .createAt(new Date())

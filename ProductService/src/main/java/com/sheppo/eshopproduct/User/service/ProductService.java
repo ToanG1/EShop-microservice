@@ -17,6 +17,7 @@ import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service("userProductService")
 @RequiredArgsConstructor
@@ -37,6 +38,7 @@ public class ProductService {
                 .price(product.getPrice())
                 .storeId(product.getStoreId())
                 .listImages(product.getListImages())
+                .listComment(product.getListComment())
                 .category(product.getCategory())
                 .listStyle(product.getListStyle())
                 .rating(product.getRating())
@@ -90,4 +92,9 @@ public class ProductService {
         return productRepository.findAllByIdAndIsSellingIsTrueAndIsActiveIsTrue(productIdList).stream().map(this::mapToProductRespone).toList();
     }
 
+    public ProductDto findById(String id) {
+        Optional<Product> prod = productRepository.findById(id);
+        if (prod.isPresent()) return mapToProductRespone(prod.get());
+        else return new ProductDto();
+    }
 }

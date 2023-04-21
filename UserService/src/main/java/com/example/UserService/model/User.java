@@ -25,6 +25,7 @@ public class User implements UserDetails {
     private String email;
     private Integer phoneNumber;
     private String password;
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String uid;
     @Enumerated(EnumType.STRING)
     private UserRole role;

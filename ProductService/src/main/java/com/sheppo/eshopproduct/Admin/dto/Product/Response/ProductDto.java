@@ -20,7 +20,7 @@ public class ProductDto {
     private String description;
     private Integer price;
     private Integer quantity;
-    private String storeId;
+    private Long storeId;
     private Boolean is_selling;
     private Boolean is_active;
     private List<String> listImages;
