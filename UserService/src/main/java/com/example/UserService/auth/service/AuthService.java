@@ -23,6 +23,7 @@ public class AuthService {
 
     private UserResponse mapToUserResponse(User user) {
         return UserResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .avatar(user.getAvatar())
                 .point(user.getPoint())

@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Builder
@@ -25,7 +26,6 @@ public class User implements UserDetails {
     private String email;
     private Integer phoneNumber;
     private String password;
-    @GeneratedValue(strategy = GenerationType.UUID)
     private String uid;
     @Enumerated(EnumType.STRING)
     private UserRole role;

@@ -8,7 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FindFollowProductRequest {
-    private String uid;
+    private Long id;
     private Integer currentPage = 0;
     private Integer size = 10;
 }

@@ -14,9 +14,12 @@ public class CartController {
 
     private final CartService cartService;
 
-    @GetMapping
+    @GetMapping("/{uid}")
     @ResponseStatus(HttpStatus.OK)
-    public CartResponse findCart(@RequestBody FindCartRequest findCartRequest){
+    public CartResponse findCart(@PathVariable String uid,
+                                 @RequestParam(defaultValue = "0") Integer currentPage,
+                                 @RequestParam(defaultValue = "10") Integer size){
+        FindCartRequest findCartRequest = new FindCartRequest(uid, currentPage, size);
         return cartService.findCart(findCartRequest);
     }
 }

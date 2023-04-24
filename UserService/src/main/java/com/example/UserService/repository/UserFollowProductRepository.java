@@ -9,9 +9,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserFollowProductRepository extends JpaRepository<UserFollowProduct, Long> {
-    Optional<UserFollowProduct> findByUserUidAndProductId(String uid, String productId);
-    Page<UserFollowProduct> findAllByUserUid(String uid, Pageable pageable);
+    Optional<UserFollowProduct> findByUserIdAndProductId(Long id, String productId);
+    Page<UserFollowProduct> findAllByUserId(Long uid, Pageable pageable);
     Page<UserFollowProduct> findAllByProductId(String id, Pageable pageable);
-    int countByUserUid(String uid);
+    int countByUserId(Long id);
     int countByProductId(String uid);
 }

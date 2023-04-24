@@ -24,7 +24,7 @@ public class ProductService {
         bodyMap.put("productId",id);
 
         int countProduct = webClient.build().post()
-                .uri("http://ProductService/api/product/user/product")
+                .uri("http://ProductService/api/product/user/product/count")
                 .body(BodyInserters.fromValue(bodyMap))
                 .retrieve()
                 .bodyToMono(Integer.class)

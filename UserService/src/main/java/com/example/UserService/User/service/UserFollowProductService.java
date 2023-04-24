@@ -30,17 +30,20 @@ public class UserFollowProductService {
     private final UserFollowProductRepository ufpRepository;
 
     public void followProduct(FollowProductRequest followProductRequest) {
-        if (followProductRequest.getProductId() != null && followProductRequest.getUid() != null)
-            ufpRepository.findByUserUidAndProductId(followProductRequest.getUid(), followProductRequest.getProductId()).ifPresentOrElse(
+        if (followProductRequest.getProductId() != null && followProductRequest.getId() != null)
+            ufpRepository.findByUserIdAndProductId(followProductRequest.getId(), followProductRequest.getProductId()).ifPresentOrElse(
                     ufp -> {
+                        System.out.print("delete");
                         ufpRepository.delete(ufp);
-                        log.info("User {} unfollow product {} successfully", followProductRequest.getUid(), followProductRequest.getProductId());
+                        log.info("User {} unfollow product {} successfully", followProductRequest.getId(), followProductRequest.getProductId());
                     },
                     () -> {
                         //check product available
+                        System.out.print("debug1");
                         if (productService.isProductAvailable(followProductRequest.getProductId())) {
-                            userRepository.findByUid(followProductRequest.getUid()).ifPresentOrElse(
+                            userRepository.findById(followProductRequest.getId()).ifPresentOrElse(
                                     user -> {
+                                        System.out.print("debug2");
                                         UserFollowProduct ufp = UserFollowProduct.builder()
                                                 .user(user)
                                                 .productId(followProductRequest.getProductId())
@@ -48,9 +51,9 @@ public class UserFollowProductService {
                                                 .build();
                                         ufpRepository.save(ufp);
                                         log.info("User {} follow product {} successfully",
-                                                followProductRequest.getUid(), followProductRequest.getProductId());
+                                                followProductRequest.getId(), followProductRequest.getProductId());
                                     },
-                                    () -> log.info("User {} is not available", followProductRequest.getUid())
+                                    () -> log.info("User {} is not available", followProductRequest.getId())
                             );
 
                         } else {
@@ -61,8 +64,8 @@ public class UserFollowProductService {
     }
 
     public FollowProductResponse findAll(FindFollowProductRequest ffpRequest) {
-        List<String> stringList = ufpRepository.findAllByUserUid
-                        (ffpRequest.getUid(), PageRequest.of(ffpRequest.getCurrentPage(), ffpRequest.getSize()))
+        List<String> stringList = ufpRepository.findAllByUserId
+                        (ffpRequest.getId(), PageRequest.of(ffpRequest.getCurrentPage(), ffpRequest.getSize()))
                 .stream().map(userFollowProduct -> userFollowProduct.getProductId()).toList();
         ProductDto[] response = webClient.build().get()
                 .uri("http://ProductService/api/product/user/product/listProduct",
@@ -74,7 +77,7 @@ public class UserFollowProductService {
                 .productDtoList(Arrays.stream(response).toList())
                 .currentPage(ffpRequest.getCurrentPage())
                 .size(ffpRequest.getSize())
-                .totalPage((int) Math.ceil(ufpRepository.countByUserUid(ffpRequest.getUid()) / ffpRequest.getSize()))
+                .totalPage((int) Math.ceil(ufpRepository.countByUserId(ffpRequest.getId()) / ffpRequest.getSize()))
                 .build();
     }
 }

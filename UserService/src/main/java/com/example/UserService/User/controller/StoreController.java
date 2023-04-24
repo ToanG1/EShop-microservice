@@ -13,9 +13,9 @@ public class StoreController {
 
     private final StoreService storeservice;
 
-    @GetMapping("/{id}")
+    @GetMapping()
     @ResponseStatus(HttpStatus.OK)
-    public StoreResponse findStore(@PathVariable Long id){
+    public StoreResponse findStore(@RequestParam Long id){
         return storeservice.findStore(id);
     }
 

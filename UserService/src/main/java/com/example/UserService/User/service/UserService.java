@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.Optional;
+import java.util.UUID;
 
 @Service("UserService")
 @RequiredArgsConstructor
@@ -25,6 +26,7 @@ public class UserService {
                 .name(createUserRequest.getName())
                 .password(createUserRequest.getPassword())
                 .point(0)
+                .uid(String.valueOf(UUID.randomUUID()))
                 .role(UserRole.CUSTOMER)
                 .createAt(new Date())
                 .updateAt(new Date())
@@ -42,6 +44,7 @@ public class UserService {
 
     private UserResponse mapToUserResponse(User user) {
         return UserResponse.builder()
+                .id(user.getId())
                 .name(user.getName())
                 .avatar(user.getAvatar())
                 .point(user.getPoint())

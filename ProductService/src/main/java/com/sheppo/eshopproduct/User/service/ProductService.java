@@ -89,12 +89,16 @@ public class ProductService {
     }
 
     public List<ProductDto> findByProductIdList(List<String> productIdList){
-        return productRepository.findAllByIdAndIsSellingIsTrueAndIsActiveIsTrue(productIdList).stream().map(this::mapToProductRespone).toList();
+        return productIdList.stream().map(this::findById).toList();
     }
 
     public ProductDto findById(String id) {
         Optional<Product> prod = productRepository.findById(id);
         if (prod.isPresent()) return mapToProductRespone(prod.get());
         else return new ProductDto();
+    }
+
+    public Integer countById(String id){
+        return productRepository.countById(id);
     }
 }

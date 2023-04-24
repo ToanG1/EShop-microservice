@@ -22,9 +22,12 @@ public class UserFollowProductController {
         ufpService.followProduct(followProductRequest);
     }
 
-    @GetMapping
+    @GetMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public FollowProductResponse findAll(@RequestBody FindFollowProductRequest ffpRequest){
+    public FollowProductResponse findAll(@PathVariable Long id, @RequestParam(defaultValue = "10") Integer currentPage,
+                                         @RequestParam(defaultValue = "0") Integer size){
+        FindFollowProductRequest ffpRequest = new FindFollowProductRequest(id,
+                currentPage >= 0 ? currentPage : 0, size > 0 ? size : 10);
         return ufpService.findAll(ffpRequest);
     }
 }

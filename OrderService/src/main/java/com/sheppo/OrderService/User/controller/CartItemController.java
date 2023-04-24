@@ -26,9 +26,9 @@ public class CartItemController {
         cartItemService.updateCartItem(updateCartItemRequest);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCartItem(@RequestParam Long id){
+    public void deleteCartItem(@PathVariable Long id){
         cartItemService.deleteCartItem(id);
     }
 }

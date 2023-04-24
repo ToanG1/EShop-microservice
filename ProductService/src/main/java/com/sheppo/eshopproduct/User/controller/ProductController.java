@@ -38,10 +38,7 @@ public class ProductController {
     @PostMapping("/count")
     @ResponseStatus(HttpStatus.OK)
     public int countProduct(@RequestBody FindProductRequest productRequest) {
-        productRequest.setSize(null);
-        productRequest.setCurrentPage(null);
-        int countProduct = productService.find(productRequest).getProductDtoList().size();
-        return countProduct;
+        return productService.countById(productRequest.getProductId());
     }
 
 
