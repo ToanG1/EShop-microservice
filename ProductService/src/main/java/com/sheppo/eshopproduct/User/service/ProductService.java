@@ -54,7 +54,7 @@ public class ProductService {
             query.with(pageable);
         }
 
-        query.addCriteria(Criteria.where("is_active").is(true).and("is_selling").is(true));
+        query.addCriteria(Criteria.where("isActive").is(true).and("isSelling").is(true));
 
         if (productRequest.getName() != null)
             query.addCriteria(Criteria.where("name").regex(productRequest.getName()));

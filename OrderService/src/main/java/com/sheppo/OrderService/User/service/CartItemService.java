@@ -113,25 +113,31 @@ public class CartItemService {
     public void updateCartItem(UpdateCartItemRequest updateCartItemRequest) {
         cartItemRepository.findById(updateCartItemRequest.getCartItemId()).ifPresentOrElse(
                 cartItem -> {
-                    cartItem.setQuantity(updateCartItemRequest.getQuantity() > 0 ? updateCartItemRequest.getQuantity() : 1);
-                    CartBox cartBox = cartItem.getCartBox();
-                    cartBox.setUpdateAt(new Date());
-                    cartBoxRepository.save(cartBox);
-                    cartItemRepository.save(cartItem);
-                    log.info("CartItem {} is updated quantity successfully", updateCartItemRequest.getCartItemId());
-                },
+                    if (cartItem.getCartBox().getCart().getUid().equals(updateCartItemRequest.getUid())){
+                        cartItem.setQuantity(updateCartItemRequest.getQuantity() > 0 ? updateCartItemRequest.getQuantity() : 1);
+                        CartBox cartBox = cartItem.getCartBox();
+                        cartBox.setUpdateAt(new Date());
+                        cartBoxRepository.save(cartBox);
+                        cartItemRepository.save(cartItem);
+                        log.info("CartItem {} is updated quantity successfully", updateCartItemRequest.getCartItemId());
+                    } else log.info("Cartitem {} is not available", updateCartItemRequest.getCartItemId());
+                    },
                 () -> log.info("Cartitem {} is not available", updateCartItemRequest.getCartItemId())
         );
     }
 
-    public void deleteCartItem(Long id) {
+    public void deleteCartItem(Long id, String uid) {
         cartItemRepository.findById(id).ifPresentOrElse(
                 cartItem -> {
-                    cartItemRepository.delete(cartItem);
-                    if (cartItem.getCartBox().getCartItemList().size() == 1) {
-                        cartBoxRepository.deleteById(cartItem.getCartBox().getId());
+                    if (cartItem.getCartBox().getCart().getUid().equals(uid)){
+                        cartItemRepository.delete(cartItem);
+                        if (cartItem.getCartBox().getCartItemList().size() == 1) {
+                            cartBoxRepository.deleteById(cartItem.getCartBox().getId());
+                        }
+                        else log.info("CartItem {} is removed successfully", id);
+                    } else {
+                        log.info("Cartitem {} is not available", id);
                     }
-                    log.info("CartItem {} is removed successfully", id);
                 },
                 () -> log.info("Cartitem {} is not available", id)
         );

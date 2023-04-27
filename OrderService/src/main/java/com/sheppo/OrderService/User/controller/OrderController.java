@@ -5,6 +5,7 @@ import com.sheppo.OrderService.User.dto.Order.Request.FindOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.PlaceOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.UpdateOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Response.OrderResponse;
+import com.sheppo.OrderService.User.dto.Order.Response.SuccessOrderResponse;
 import com.sheppo.OrderService.User.service.OrderService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import io.github.resilience4j.retry.annotation.Retry;
@@ -37,7 +38,7 @@ public class OrderController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public List<String> placeOrder(@RequestBody PlaceOrderRequest placeOrderRequest){
+    public SuccessOrderResponse placeOrder(@RequestBody PlaceOrderRequest placeOrderRequest){
         return orderService.placeOrder(placeOrderRequest);
     }
 

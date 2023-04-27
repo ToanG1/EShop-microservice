@@ -185,7 +185,7 @@ public class ProductService {
         }
     }
 
-    public void changeIs_Selling(UpdateProductRequest updateProductRequest) {
+    public void toggleIs_Selling(UpdateProductRequest updateProductRequest) {
         productRepository.findById(updateProductRequest.getId()).ifPresentOrElse(updatedProduct -> {
                     updatedProduct.setIsSelling(!updatedProduct.getIsSelling());
                     productRepository.save(updatedProduct);
@@ -195,10 +195,12 @@ public class ProductService {
                     log.info("Product {} is not available", updateProductRequest.getId());
                 });
     }
-    public void minusQuantityAfterOrder(String productId, int quantity){
+    public void AfterOrder(String productId, int quantity){
         productRepository.findById(productId).ifPresentOrElse(
                 product -> {
                     product.setQuantity(product.getQuantity() - quantity);
+                    product.setSales(product.getSales() + quantity);
+                    product.setIsSelling(product.getQuantity() > 0);
                     productRepository.save(product);
                     log.info("Product {} quantity is minus {} successfully", productId, quantity);
                 },

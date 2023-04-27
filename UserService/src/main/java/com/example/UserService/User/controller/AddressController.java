@@ -18,13 +18,13 @@ public class AddressController {
 
     private final AddressService addressService;
 
-    @PostMapping
+    @PostMapping("/create")
     @ResponseStatus(HttpStatus.CREATED)
     public void createAddress(@RequestBody CreateAddressRequest createAddressRequest){
         addressService.createAddress(createAddressRequest);
     }
 
-    @GetMapping
+    @PostMapping
     @ResponseStatus(HttpStatus.OK)
     public ListAddressResponse findAllByUid(@RequestBody FindAddressRequest findAddressRequest){
         return addressService.findAllByUid(findAddressRequest);
@@ -42,9 +42,10 @@ public class AddressController {
         addressService.updateAddress(updateAddressRequest);
     }
 
-    @DeleteMapping
+    @DeleteMapping("/{uid}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteAddress(@RequestBody DeleteAddressRequest deleteAddressRequest){
+    public void deleteAddress(@PathVariable String uid, @RequestParam Long id){
+        DeleteAddressRequest deleteAddressRequest = new DeleteAddressRequest(uid, id);
         addressService.deleteAddress(deleteAddressRequest);
     }
 }

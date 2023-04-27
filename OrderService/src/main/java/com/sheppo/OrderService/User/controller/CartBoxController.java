@@ -12,9 +12,9 @@ public class CartBoxController {
 
     private final CartBoxService cartBoxService;
 
-    @DeleteMapping
+    @DeleteMapping("/{id}")
     @ResponseStatus(HttpStatus.OK)
-    public void deleteCartBox(@RequestParam Long id){
-        cartBoxService.deleteCartBox(id);
+    public void deleteCartBox(@PathVariable Long id, @RequestParam String uid){
+        cartBoxService.deleteCartBox(id, uid);
     }
 }

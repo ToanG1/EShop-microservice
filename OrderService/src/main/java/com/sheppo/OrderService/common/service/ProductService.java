@@ -30,7 +30,7 @@ public class ProductService {
         return findProductList(productIdList).isEmpty() ? null : findProductList(productIdList).get(0) ;
     }
 
-    public void minusQuantityAfterOrder(String productId, int quantity){
+    public void ProductAfterOrder(String productId, int quantity){
         webClient.build().put().uri("http://ProductService/api/product/vendor/product/afterOrder",
                 uriBuilder -> uriBuilder.queryParam("productId", productId).queryParam("quantity", quantity).build())
                 .retrieve()

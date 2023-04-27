@@ -1,14 +1,11 @@
 package com.sheppo.eshopproduct.Vendor.controller;
 
 import com.sheppo.eshopproduct.Vendor.dto.Product.Request.*;
-import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductDto;
 import com.sheppo.eshopproduct.Vendor.dto.Product.Response.ProductListResponse;
 import com.sheppo.eshopproduct.Vendor.service.ProductService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController("vendorProductController")
 @RequestMapping("api/product/vendor/product")
@@ -36,14 +33,14 @@ public class ProductController {
 
     @PutMapping("/afterOrder")
     @ResponseStatus(HttpStatus.OK)
-    public void minusQuantityAfterOrder(@RequestParam String productId, Integer quantity){
-        productService.minusQuantityAfterOrder(productId, quantity);
+    public void AfterOrder(@RequestParam String productId, Integer quantity){
+        productService.AfterOrder(productId, quantity);
     }
 
     @PutMapping ("/switchSelling")
     @ResponseStatus(HttpStatus.OK)
-    public void changeIs_Selling(@RequestBody UpdateProductRequest updateProductRequest){
-        productService.changeIs_Selling(updateProductRequest);
+    public void toggleIs_Selling(@RequestBody UpdateProductRequest updateProductRequest){
+        productService.toggleIs_Selling(updateProductRequest);
     }
 
     @PutMapping("/import")

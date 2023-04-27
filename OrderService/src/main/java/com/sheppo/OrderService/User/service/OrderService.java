@@ -4,9 +4,7 @@ import com.sheppo.OrderService.User.dto.Order.Request.DeleteOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.FindOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.PlaceOrderRequest;
 import com.sheppo.OrderService.User.dto.Order.Request.UpdateOrderRequest;
-import com.sheppo.OrderService.User.dto.Order.Response.OrderDto;
-import com.sheppo.OrderService.User.dto.Order.Response.OrderItemDto;
-import com.sheppo.OrderService.User.dto.Order.Response.OrderResponse;
+import com.sheppo.OrderService.User.dto.Order.Response.*;
 import com.sheppo.OrderService.common.dto.Address.Response.AddressDto;
 import com.sheppo.OrderService.common.dto.Product.Response.ProductDto;
 import com.sheppo.OrderService.common.service.ProductService;
@@ -19,10 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service("UserOrderService")
 @Slf4j
@@ -47,9 +42,8 @@ public class OrderService {
 
     private final OrderItemRepository orderItemRepository;
 
-    public List<String> placeOrder(PlaceOrderRequest request) {
-        List<String> orderUrl = new ArrayList<>();
-
+    public SuccessOrderResponse placeOrder(PlaceOrderRequest request) {
+        SuccessOrderResponse resp = new SuccessOrderResponse();
         //Check is user valid
         AddressDto addressDto = userService.isUserAndAddressValid(request.getUid(), request.getAddressId());
         if (addressDto != null) {
@@ -66,7 +60,7 @@ public class OrderService {
                     if (!storeIdList.contains(productDto.getStoreId())) storeIdList.add(productDto.getStoreId());
                 });
                 //place orders
-                orderUrl = storeIdList.stream().map(store -> {
+                resp.setOrders( storeIdList.stream().map(store -> {
 
                     //Find products follow storeid
                     List<ProductDto> products = productDtoList.stream()
@@ -103,9 +97,9 @@ public class OrderService {
                                 //Save oderItem
                                 orderItemRepository.save(mapToOrderItem(productDto, order));
                                 //Minus quantity of product
-                                productService.minusQuantityAfterOrder(productDto.getId(), productDto.getCartItemQuantity());
+                                productService.ProductAfterOrder(productDto.getId(), productDto.getCartItemQuantity());
                                 //Delete cartItem after ordered successfully
-                                cartItemService.deleteCartItem(productDto.getCartItemId());
+                                cartItemService.deleteCartItem(productDto.getCartItemId(), request.getUid());
                             }
                         });
 
@@ -114,14 +108,25 @@ public class OrderService {
                             String url = zaloPayService.createOrder(order.getId());
                             order.setPaymentUrl(url);
                             orderRepository.save(order);
-                            return url;
-                        }else return null;
-                    } else log.info("Shipping {} is not available", request.getShippingId());
-                    return null;
-                }).toList();
-            } else log.info("There are no product available to order");
-        } else log.info("User {} with address {} is not available", request.getUid(), request.getAddressId());
-        return orderUrl;
+                            return CreateOrderResponse.builder()
+                                    .url(url)
+                                    .id(order.getId())
+                                    .build();
+                        }else return CreateOrderResponse.builder().url(null).id(order.getId()).build();
+                    } else {
+                        log.info("Shipping {} is not available", request.getShippingId());
+                        return CreateOrderResponse.builder().res("Shipping option is not available").build();
+                    }
+                }).toList());
+            } else {
+                log.info("There are no product available to order");
+                resp.setRes("Products is not available to order");
+            }
+        } else {
+            log.info("User {} with address {} is not available", request.getUid(), request.getAddressId());
+            resp.setRes("User with address is not available");
+        }
+        return resp;
     }
 
     private List<ProductDto> maptoOrderProduct(List<ProductDto> products, List<CartItem> cartItems) {
@@ -145,10 +150,7 @@ public class OrderService {
         return payment.equals("zaloPay") || payment.equals("banking") || payment.equals("visa");
     }
 
-    private Integer calculateShippingCost(Shipping shipping, String shippingVoucherCode) {
-        Optional<Voucher> voucher = voucherRepository.findByCode(shippingVoucherCode);
-        return (int) (shipping.getShippingCost() * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
-    }
+
 
     private OrderItem mapToOrderItem(ProductDto productDto, Order order) {
         return OrderItem.builder()
@@ -166,6 +168,11 @@ public class OrderService {
         int orderValue = products.stream().mapToInt(product -> product.getPrice() * product.getCartItemQuantity()).sum();
         Optional<Voucher> voucher = voucherRepository.findByCode(voucherCode);
         return (int) (orderValue * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
+    }
+
+    private Integer calculateShippingCost(Shipping shipping, String shippingVoucherCode) {
+        Optional<Voucher> voucher = voucherRepository.findByCode(shippingVoucherCode);
+        return (int) (shipping.getShippingCost() * (1 - (voucher.isPresent() ? voucher.get().getVoucherValue() : 0)));
     }
 
     public String updateOrder(UpdateOrderRequest updateOrderRequest) {

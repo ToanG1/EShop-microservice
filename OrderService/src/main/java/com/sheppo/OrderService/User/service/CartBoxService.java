@@ -14,12 +14,15 @@ public class CartBoxService {
     private final CartItemRepository cartItemRepository;
     private final CartBoxRepository cartBoxRepository;
 
-    public void deleteCartBox(Long id){
+    public void deleteCartBox(Long id, String uid){
         cartBoxRepository.findById(id).ifPresentOrElse(
                 cartBox -> {
-                    cartItemRepository.deleteAll(cartBox.getCartItemList());
-                    cartBoxRepository.delete(cartBox);
-                    log.info("CartBox {} is removed successfully", id);
+                    if(cartBox.getCart().getUid().equals(uid)){
+                        cartItemRepository.deleteAll(cartBox.getCartItemList());
+                        cartBoxRepository.delete(cartBox);
+                        log.info("CartBox {} is removed successfully", id);
+                    }
+                    else log.info("CartBox {} is not available", id);
                 },
                 () -> log.info("CartBox {} is not available", id)
         );
