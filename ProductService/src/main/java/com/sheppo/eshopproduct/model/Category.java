@@ -19,6 +19,7 @@ public class Category {
     private String id;
     private String name;
     private Integer total;
+    private String avatar;
     private Date createAt;
     private Date updateAt;
 }
