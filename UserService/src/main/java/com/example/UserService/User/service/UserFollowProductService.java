@@ -33,17 +33,14 @@ public class UserFollowProductService {
         if (followProductRequest.getProductId() != null && followProductRequest.getId() != null)
             ufpRepository.findByUserIdAndProductId(followProductRequest.getId(), followProductRequest.getProductId()).ifPresentOrElse(
                     ufp -> {
-                        System.out.print("delete");
                         ufpRepository.delete(ufp);
                         log.info("User {} unfollow product {} successfully", followProductRequest.getId(), followProductRequest.getProductId());
                     },
                     () -> {
                         //check product available
-                        System.out.print("debug1");
                         if (productService.isProductAvailable(followProductRequest.getProductId())) {
                             userRepository.findById(followProductRequest.getId()).ifPresentOrElse(
                                     user -> {
-                                        System.out.print("debug2");
                                         UserFollowProduct ufp = UserFollowProduct.builder()
                                                 .user(user)
                                                 .productId(followProductRequest.getProductId())

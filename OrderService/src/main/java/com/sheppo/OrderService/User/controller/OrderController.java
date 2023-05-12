@@ -24,17 +24,17 @@ public class OrderController {
 
     private final OrderService orderService;
 
-    @GetMapping
+    @PostMapping("/list")
     @ResponseStatus(HttpStatus.OK)
-    @CircuitBreaker(name="inventory", fallbackMethod = "getOrderFallBack")
-    @TimeLimiter(name="inventory")
-    @Retry(name="inventory")
-    public CompletableFuture<OrderResponse> findOrder(@RequestBody FindOrderRequest findOrderRequest){
-        return CompletableFuture.supplyAsync(() -> orderService.findOrder(findOrderRequest));
+//    @CircuitBreaker(name="inventory", fallbackMethod = "getOrderFallBack")
+//    @TimeLimiter(name="inventory")
+//    @Retry(name="inventory")
+    public OrderResponse findOrder(@RequestBody FindOrderRequest findOrderRequest){
+        return orderService.findOrder(findOrderRequest);
     }
-    public CompletableFuture<OrderResponse> getOrderFallBack(FindOrderRequest findOrderRequest, RuntimeException runtimeException){
-        return CompletableFuture.supplyAsync(() -> orderService.findOrder(findOrderRequest));
-    }
+//    public CompletableFuture<OrderResponse> getOrderFallBack(FindOrderRequest findOrderRequest, RuntimeException runtimeException){
+//        return CompletableFuture.supplyAsync(() -> orderService.findOrder(findOrderRequest));
+//    }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
