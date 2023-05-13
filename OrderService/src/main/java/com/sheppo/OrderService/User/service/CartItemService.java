@@ -130,11 +130,16 @@ public class CartItemService {
         cartItemRepository.findById(id).ifPresentOrElse(
                 cartItem -> {
                     if (cartItem.getCartBox().getCart().getUid().equals(uid)){
-                        cartItemRepository.delete(cartItem);
                         if (cartItem.getCartBox().getCartItemList().size() == 1) {
+                            cartItemRepository.delete(cartItem);
+                            log.info("CartItem {} is removed successfully", id);
                             cartBoxRepository.deleteById(cartItem.getCartBox().getId());
+                            log.info("CartBox {} is removed successfully", cartItem.getCartBox().getId());
                         }
-                        else log.info("CartItem {} is removed successfully", id);
+                        else {
+                            cartItemRepository.delete(cartItem);
+                            log.info("CartItem {} is removed successfully", id);
+                        }
                     } else {
                         log.info("Cartitem {} is not available", id);
                     }
